@@ -114,9 +114,32 @@ def main():
                 "NOT claimed: completeness — 85 carriers is a library, "
                 "not the space of all formal systems."]}
     seal(body, chain)
+    # THE HISTORY HEARING (before the writer speaks): the committed
+    # manifest must replay by seal arithmetic alone — regenerate-then-
+    # compare validates the writer, not the history (the Atlas's
+    # first-day finding about this repo, closed here).
     out = pathlib.Path(__file__).parent / "manifests"
-    out.mkdir(exist_ok=True)
-    (out / "library_manifest.json").write_text(json.dumps(chain, indent=1))
+    mp = out / "library_manifest.json"
+    if mp.exists():
+        try:
+            prior = json.loads(mp.read_text())
+        except Exception:
+            prior = None
+        if not (isinstance(prior, list) and replay(prior)):
+            print("\n  HISTORY: committed manifest does NOT replay — "
+                  "possible tampering;")
+            print("  file preserved as evidence; refusing to "
+                  "regenerate over it.")
+            any_fail = True
+        else:
+            print(f"\n  history: committed manifest replays "
+                  f"({len(prior)} seals) — proceeding")
+            new = json.dumps(chain, indent=1)
+            if mp.read_text() != new:
+                mp.write_text(new)
+    else:
+        out.mkdir(exist_ok=True)
+        mp.write_text(json.dumps(chain, indent=1))
 
     print("\n  " + "=" * 68)
     print(f"  LIBRARY PAID FRACTION: {total_paid}/{total_claims} claims "
