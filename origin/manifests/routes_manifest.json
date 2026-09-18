@@ -1,0 +1,55 @@
+{
+  "claims": [
+    {
+      "cut": "{0..8}",
+      "falsifier": "exhibit k in 0..8 where wrap-succ and Peano-succ split",
+      "held": true,
+      "n": 9,
+      "scope": 9,
+      "text": "successor agrees on {0..8}",
+      "tier": "FORCED-on-cut"
+    },
+    {
+      "cut": "81 pairs",
+      "falsifier": "exhibit a pair in 0..8 where the two + split",
+      "held": true,
+      "n": 81,
+      "scope": 81,
+      "text": "addition agrees on 81 pairs",
+      "tier": "FORCED-on-cut"
+    },
+    {
+      "cut": "81 pairs",
+      "falsifier": "exhibit a pair in 0..8 where the two * split",
+      "held": true,
+      "n": 81,
+      "scope": 81,
+      "text": "multiplication agrees on 81 pairs",
+      "tier": "FORCED-on-cut"
+    },
+    {
+      "cut": "source",
+      "falsifier": "implement m_add with no host addition",
+      "held": true,
+      "n": 1,
+      "scope": 1,
+      "text": "mechanism route still calls host + inside co_propagate",
+      "tier": "FORCED-on-cut"
+    },
+    {
+      "cut": "",
+      "falsifier": "exhibit a finite check that closes + on all Nat without a schema",
+      "held": true,
+      "n": 0,
+      "scope": null,
+      "text": "neither route certifies unbounded + from this cut",
+      "tier": "CONDITIONAL"
+    }
+  ],
+  "notes": [
+    "NOT claimed: mechanism assumes nothing. It assumes a wrap.",
+    "NOT claimed: agreement on 81 pairs is Peano arithmetic."
+  ],
+  "title": "ROUTES \u2014 two presentations, one wall",
+  "verdict": "CONDITIONAL"
+}

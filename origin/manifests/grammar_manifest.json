@@ -1,0 +1,54 @@
+{
+  "claims": [
+    {
+      "cut": "depth 0..3",
+      "falsifier": "exhibit a depth where open_deps != depth+1",
+      "held": true,
+      "n": 4,
+      "scope": 4,
+      "text": "centre-embed load grows with depth (open subjects)",
+      "tier": "FORCED-on-cut"
+    },
+    {
+      "cut": "depth 2",
+      "falsifier": "show centre_embed returns a (V,G,theta) triple",
+      "held": true,
+      "n": 1,
+      "scope": 1,
+      "text": "a sentence is a propagation string, not a carrier",
+      "tier": "FORCED-on-cut"
+    },
+    {
+      "cut": "stated split",
+      "falsifier": "identify SVO with V, G, and theta without remainder",
+      "held": true,
+      "n": 1,
+      "scope": 1,
+      "text": "claim A 'SVO is (V,G,theta)' is a level mismatch",
+      "tier": "FORCED-on-cut"
+    },
+    {
+      "cut": "stated split",
+      "falsifier": "treat the shape as identity of carriers",
+      "held": true,
+      "n": 1,
+      "scope": 1,
+      "text": "claim B language and math share a shape (analogy only)",
+      "tier": "FORCED-on-cut"
+    },
+    {
+      "cut": "stated split",
+      "falsifier": "produce a boolean that still carries unused scope",
+      "held": true,
+      "n": 1,
+      "scope": 1,
+      "text": "claim C boolean is stripped predication (degree=1, scope empty)",
+      "tier": "FORCED-on-cut"
+    }
+  ],
+  "notes": [
+    "NOT claimed: this is a parser. It is a load counter."
+  ],
+  "title": "GRAMMAR \u2014 carrier vs sentence",
+  "verdict": "FORCED-on-cut"
+}

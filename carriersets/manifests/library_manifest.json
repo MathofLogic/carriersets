@@ -1,0 +1,98 @@
+[
+ {
+  "carrier": "DNA_TAPE",
+  "claims": 2,
+  "paid": 0,
+  "failed": 0,
+  "sha_prev": "GENESIS",
+  "sha": "f754dab94336ea51"
+ },
+ {
+  "carrier": "PY_RUNTIME",
+  "claims": 1,
+  "paid": 0,
+  "failed": 0,
+  "sha_prev": "f754dab94336ea51",
+  "sha": "1f66bc910fd3cf7b"
+ },
+ {
+  "carrier": "RUST_MOVE_MINI",
+  "claims": 1,
+  "paid": 0,
+  "failed": 0,
+  "sha_prev": "1f66bc910fd3cf7b",
+  "sha": "1f1851027566411b"
+ },
+ {
+  "carrier": "JAVA_UNBOX_MINI",
+  "claims": 1,
+  "paid": 0,
+  "failed": 0,
+  "sha_prev": "1f1851027566411b",
+  "sha": "08f6ca0ab8afd04b"
+ },
+ {
+  "carrier": "ECON_BUDGET",
+  "claims": 1,
+  "paid": 0,
+  "failed": 0,
+  "sha_prev": "08f6ca0ab8afd04b",
+  "sha": "3bff4ce6920cdfd6"
+ },
+ {
+  "carrier": "ECON_LEDGER",
+  "claims": 1,
+  "paid": 0,
+  "failed": 0,
+  "sha_prev": "3bff4ce6920cdfd6",
+  "sha": "d4c8d9c11d32b500"
+ },
+ {
+  "carrier": "GOODHART",
+  "claims": 1,
+  "paid": 0,
+  "failed": 0,
+  "sha_prev": "d4c8d9c11d32b500",
+  "sha": "94562f4986cd3c18"
+ },
+ {
+  "carrier": "HAYEK_SIGNAL",
+  "claims": 1,
+  "paid": 0,
+  "failed": 0,
+  "sha_prev": "94562f4986cd3c18",
+  "sha": "27f286f6684380fe"
+ },
+ {
+  "carrier": "LUCAS_SLOPE",
+  "claims": 1,
+  "paid": 0,
+  "failed": 0,
+  "sha_prev": "27f286f6684380fe",
+  "sha": "c9c8f9e6558d0572"
+ },
+ {
+  "carrier": "GHOST_CLOSE",
+  "claims": 1,
+  "paid": 0,
+  "failed": 0,
+  "sha_prev": "c9c8f9e6558d0572",
+  "sha": "21cd57d9969b4c43"
+ },
+ {
+  "carriers": 104,
+  "mode": "ALL",
+  "claims": 11,
+  "paid": 0,
+  "paid_fraction": 0.0,
+  "executable_checks_run": 11,
+  "verdict": "PASS/STIPULATED",
+  "non_claims": [
+   "NOT claimed: that PRESUMED entries are false or even doubtful \u2014 only that this library did not re-derive them, and prices itself accordingly.",
+   "NOT claimed: that a carrier's insight prose is itself verified \u2014 the checks decide the Forces/Breaks tables; the prose is commentary.",
+   "NOT claimed: completeness \u2014 85 carriers is a library, not the space of all formal systems."
+  ],
+  "sha_prev": "21cd57d9969b4c43",
+  "sha": "b39e84cdc1d69fc6"
+ }
+]

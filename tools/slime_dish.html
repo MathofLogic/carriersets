@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Slime Mold — Bidirectional Flow</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#050d09;display:flex;flex-direction:column;align-items:center;padding:12px;min-height:100vh}
+canvas{display:block;border-radius:50%;cursor:crosshair;margin:10px 0}
+#ui{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-bottom:8px}
+button{font-size:12px;padding:4px 12px;border:1px solid #2a4a35;border-radius:4px;background:#0a1f12;color:#7ecf9a;cursor:pointer}
+button:hover{background:#112a1a}
+button.on{background:#122a1a;border-color:#4ecb71;color:#4ecb71}
+#hud{display:flex;gap:20px;font-size:11px;color:#3a6a48;font-variant-numeric:tabular-nums;margin-top:4px}
+.hv{color:#7ecf9a}
+</style>
+</head>
+<body>
+<div id="ui">
+  <button id="bAdd" class="on">+ nutrient</button>
+  <button id="bReset">reset</button>
+  <button id="bPause">pause</button>
+</div>
+<canvas id="c"></canvas>
+<div id="hud">
+  <span>agents <span class="hv" id="hA">0</span></span>
+  <span>nutrients <span class="hv" id="hN">0</span></span>
+  <span>density <span class="hv" id="hD">forming</span></span>
+</div>
+
+<script>
+const GW=300,GH=300,AMAX=8000;
+const CX=GW/2,CY=GH/2,DR=GW*0.455;
+const SA=Math.PI/8,SD=9,RA=Math.PI/3.8,SPD=1;
+
+// Forward flow (nutrient signal)
+const CDEP=2.5,CCOST=3.8,CDECAY=0.905;
+// Structural memory
+const KDEP=0.005,KDECAY=0.9994,KTHRESH=0.04;
+// Return flow (richness signal — well-fed agents emit this back)
+const RDEP=4.0,RDECAY=0.92,RWEIGHT=0.6;
+// Energy
+const EMAX=120,EGAIN=1.1,ECOST=0.28,ESPAWN=90;
+// Nutrients
+const NMAX=2800,NEMIT=0.22,NSPAWN=0.055;
+
+let chem = new Float32Array(GW*GH);  // forward: nutrient signal
+let rich = new Float32Array(GW*GH);  // return: well-fed signal
+let cond = new Float32Array(GW*GH);  // structural memory
+
+const mask = new Uint8Array(GW*GH);
+for(let y=0;y<GH;y++) for(let x=0;x<GW;x++){
+  const dx=x-CX,dy=y-CY;
+  mask[y*GW+x]=(dx*dx+dy*dy<(DR-1)*(DR-1))?1:0;
+}
+for(let i=0;i<GW*GH;i++) if(mask[i]) cond[i]=0.06;
+
+let agents=[],nutrients=[],adding=true,paused=false,frame=0;
+const canvas=document.getElementById('c');
+const ctx=canvas.getContext('2d');
+let SZ,SC;
+
+function resize(){
+  SZ=Math.min(560,window.innerWidth-32);
+  SC=SZ/GW;canvas.width=SZ;canvas.height=SZ;
+}
+
+function makeNutrients(){
+  return [[.28,.28],[.72,.28],[.12,.62],[.88,.62],[.5,.85],[.5,.5]]
+    .map(([rx,ry])=>({
+      x:CX+(rx-0.5)*DR*1.85,
+      y:CY+(ry-0.5)*DR*1.85,
+      amt:NMAX
+    }));
+}
+
+function spawnAt(n){
+  const a=Math.random()*Math.PI*2,r=Math.random()*4;
+  return{x:n.x+Math.cos(a)*r,y:n.y+Math.sin(a)*r,a:Math.random()*Math.PI*2,e:ESPAWN};
+}
+
+function reset(){
+  chem.fill(0);rich.fill(0);cond.fill(0);
+  for(let i=0;i<GW*GH;i++) if(mask[i]) cond[i]=0.06;
+  nutrients=makeNutrients();agents=[];frame=0;
+  let tries=0;
+  while(agents.length<6500&&tries<40000){
+    tries++;
+    const x=Math.random()*GW,y=Math.random()*GH,dx=x-CX,dy=y-CY;
+    if(dx*dx+dy*dy<(DR-5)*(DR-5))
+      agents.push({x,y,a:Math.random()*Math.PI*2,e:EMAX});
+  }
+}
+
+function sense(x,y,a){
+  const sx=Math.round(x+Math.cos(a)*SD),sy=Math.round(y+Math.sin(a)*SD);
+  if(sx<0||sx>=GW||sy<0||sy>=GH) return 0;
+  const i=sy*GW+sx;
+  if(!mask[i]) return 0;
+  const k=cond[i];
+  if(k<KTHRESH) return -8;
+  const forward=chem[i]*(0.1+0.9*Math.min(1,k/0.25));
+  const back=rich[i]*RWEIGHT;
+  // food dominates — richness only fills in when food signal is weak
+  return forward>10 ? forward : forward + back*0.3;
+}
+
+function step(){
+  frame++;
+  const nc=new Float32Array(GW*GH);
+  const nr=new Float32Array(GW*GH);
+
+  // diffuse + decay both chemical layers
+  for(let y=1;y<GH-1;y++) for(let x=1;x<GW-1;x++){
+    if(!mask[y*GW+x]) continue;
+    let sc=0,sr=0;
+    for(let dy=-1;dy<=1;dy++) for(let dx=-1;dx<=1;dx++){
+      sc+=chem[(y+dy)*GW+(x+dx)];
+      sr+=rich[(y+dy)*GW+(x+dx)];
+    }
+    nc[y*GW+x]=(sc/9)*CDECAY;
+    nr[y*GW+x]=(sr/9)*RDECAY;
+  }
+
+  // decay conductance
+  for(let i=0;i<GW*GH;i++) if(mask[i]) cond[i]*=KDECAY;
+
+  // nutrients emit forward signal
+  for(const n of nutrients){
+    if(n.amt<=0) continue;
+    const str=(n.amt/NMAX)*52;
+    n.amt=Math.max(0,n.amt-NEMIT);
+    const nx=Math.round(n.x),ny=Math.round(n.y);
+    for(let dy=-5;dy<=5;dy++) for(let dx=-5;dx<=5;dx++){
+      const px=nx+dx,py=ny+dy;
+      if(px>=0&&px<GW&&py>=0&&py<GH&&mask[py*GW+px])
+        nc[py*GW+px]=Math.min(255,nc[py*GW+px]+str);
+    }
+    if(agents.length<AMAX&&n.amt>150&&Math.random()<NSPAWN)
+      agents.push(spawnAt(n));
+  }
+
+  // update agents
+  for(let i=0;i<agents.length;i++){
+    const ag=agents[i];
+    if(ag.e<=0) continue;
+
+    const f=sense(ag.x,ag.y,ag.a);
+    const l=sense(ag.x,ag.y,ag.a-SA);
+    const r=sense(ag.x,ag.y,ag.a+SA);
+    if(f>=l&&f>=r){}
+    else if(f<l&&f<r) ag.a+=(Math.random()>.5?1:-1)*RA;
+    else if(l>r) ag.a-=RA;
+    else ag.a+=RA;
+
+    ag.x+=Math.cos(ag.a)*SPD;
+    ag.y+=Math.sin(ag.a)*SPD;
+
+    // dish boundary
+    const ddx=ag.x-CX,ddy=ag.y-CY,d2=ddx*ddx+ddy*ddy;
+    if(d2>(DR-1.5)*(DR-1.5)){
+      const dist=Math.sqrt(d2),nnx=ddx/dist,nny=ddy/dist;
+      const dot=Math.cos(ag.a)*nnx+Math.sin(ag.a)*nny;
+      ag.a=Math.atan2(Math.sin(ag.a)-2*dot*nny,Math.cos(ag.a)-2*dot*nnx);
+      ag.x=CX+nnx*(DR-2);ag.y=CY+nny*(DR-2);
+    }
+
+    const ix=Math.round(ag.x),iy=Math.round(ag.y);
+    if(ix>0&&ix<GW-1&&iy>0&&iy<GH-1&&mask[iy*GW+ix]){
+      const idx=iy*GW+ix;
+      const local=nc[idx];
+
+      // forward deposit/cost
+      nc[idx]=Math.max(0,Math.min(255,nc[idx]+CDEP-CCOST));
+      // structural reinforcement
+      cond[idx]=Math.min(1,cond[idx]+KDEP);
+      // energy update
+      ag.e+=(local/255)*EGAIN-ECOST/60;
+      ag.e=Math.max(0,Math.min(EMAX,ag.e));
+
+      // RETURN FLOW — well-fed agents emit richness signal back
+      // this is what was missing: density attracts density
+      if(ag.e>EMAX*0.65){
+        const richStr=RDEP*(ag.e/EMAX);
+        nr[idx]=Math.min(255,nr[idx]+richStr);
+      }
+    } else {
+      ag.e-=ECOST/15;
+    }
+  }
+
+  if(frame%45===0) agents=agents.filter(ag=>ag.e>0);
+  chem=nc;
+  rich=nr;
+}
+
+const off=document.createElement('canvas');
+off.width=GW;off.height=GH;
+const octx=off.getContext('2d');
+
+function render(){
+  const img=octx.createImageData(GW,GH);
+  const d=img.data;
+  for(let i=0;i<GW*GH;i++){
+    if(!mask[i]){d[i*4]=4;d[i*4+1]=8;d[i*4+2]=6;d[i*4+3]=255;continue;}
+    const cv=Math.min(255,chem[i]*1.9);
+    const rv=Math.min(255,rich[i]*2.2);   // return signal — warmer
+    const kv=Math.min(1,cond[i]);
+    const ks=kv<KTHRESH?0:kv;
+    // forward=green, return=adds warmth/white, structure=lifts all
+    d[i*4  ]=Math.round(cv*0.06 + rv*0.5  + ks*140);
+    d[i*4+1]=Math.round(cv*0.88 + rv*0.7  + ks*190);
+    d[i*4+2]=Math.round(cv*0.38 + rv*0.55 + ks*120);
+    d[i*4+3]=255;
+  }
+  octx.putImageData(img,0,0);
+
+  ctx.fillStyle='#050d09';
+  ctx.fillRect(0,0,SZ,SZ);
+  ctx.drawImage(off,0,0,SZ,SZ);
+
+  // dish rim
+  const cxs=CX*SC,cys=CY*SC,drs=DR*SC;
+  ctx.beginPath();ctx.arc(cxs,cys,drs,0,Math.PI*2);
+  ctx.strokeStyle='rgba(80,160,110,0.2)';ctx.lineWidth=2.5;ctx.stroke();
+  ctx.beginPath();ctx.arc(cxs,cys,drs+4,0,Math.PI*2);
+  ctx.strokeStyle='rgba(80,160,110,0.07)';ctx.lineWidth=5;ctx.stroke();
+
+  // nutrients
+  for(const n of nutrients){
+    if(n.amt<=0) continue;
+    const ratio=n.amt/NMAX,px=n.x*SC,py=n.y*SC;
+    const rad=Math.max(1.5,7*ratio);
+    ctx.beginPath();ctx.arc(px,py,rad,0,Math.PI*2);
+    ctx.fillStyle=`rgba(240,195,55,${0.25+ratio*0.75})`;ctx.fill();
+    ctx.beginPath();ctx.arc(px,py,rad+5,0,Math.PI*2);
+    ctx.strokeStyle=`rgba(240,195,55,${ratio*0.2})`;ctx.lineWidth=1;ctx.stroke();
+  }
+
+  const alive=agents.filter(a=>a.e>0).length;
+  const nutLeft=nutrients.filter(n=>n.amt>0).length;
+  const maxR=Math.max(...Array.from(rich).slice(0,1000)); // sample
+  document.getElementById('hA').textContent=alive;
+  document.getElementById('hN').textContent=nutLeft+'/'+nutrients.length;
+  document.getElementById('hD').textContent=maxR>20?'densifying':maxR>5?'forming':'sparse';
+}
+
+function loop(){
+  if(!paused){step();render();}
+  requestAnimationFrame(loop);
+}
+
+canvas.addEventListener('click',e=>{
+  if(!adding) return;
+  const rect=canvas.getBoundingClientRect();
+  const gx=(e.clientX-rect.left)/SC,gy=(e.clientY-rect.top)/SC;
+  const dx=gx-CX,dy=gy-CY;
+  if(dx*dx+dy*dy<(DR-5)*(DR-5))
+    nutrients.push({x:gx,y:gy,amt:NMAX});
+});
+
+document.getElementById('bAdd').addEventListener('click',()=>{
+  adding=!adding;
+  document.getElementById('bAdd').textContent=adding?'+ nutrient':'adding off';
+  document.getElementById('bAdd').classList.toggle('on',adding);
+});
+document.getElementById('bReset').addEventListener('click',reset);
+document.getElementById('bPause').addEventListener('click',()=>{
+  paused=!paused;
+  document.getElementById('bPause').textContent=paused?'resume':'pause';
+});
+
+resize();reset();loop();
+</script>
+</body>
+</html>

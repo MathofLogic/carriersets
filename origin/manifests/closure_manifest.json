@@ -1,0 +1,55 @@
+{
+  "claims": [
+    {
+      "cut": "closures 1..12",
+      "falsifier": "exhibit a wrap and three windings where grouping matters",
+      "held": true,
+      "n": 6084,
+      "scope": 6084,
+      "text": "co-propagation is associative",
+      "tier": "FORCED-on-cut"
+    },
+    {
+      "cut": "closures 1..12",
+      "falsifier": "exhibit two windings whose order changes the result",
+      "held": true,
+      "n": 650,
+      "scope": 650,
+      "text": "co-propagation is commutative",
+      "tier": "FORCED-on-cut"
+    },
+    {
+      "cut": "closures 1..12",
+      "falsifier": "exhibit a winding that 0 moves",
+      "held": true,
+      "n": 78,
+      "scope": 78,
+      "text": "0 is identity of co-propagation",
+      "tier": "FORCED-on-cut"
+    },
+    {
+      "cut": "closures 1..12",
+      "falsifier": "exhibit a winding with no undo",
+      "held": true,
+      "n": 78,
+      "scope": 78,
+      "text": "every winding has an inverse under co-propagation",
+      "tier": "FORCED-on-cut"
+    },
+    {
+      "cut": "source of co_propagate",
+      "falsifier": "rewrite co_propagate with no host addition or remainder",
+      "held": true,
+      "n": 1,
+      "scope": 1,
+      "text": "this file's wrap is implemented with host + and %",
+      "tier": "FORCED-on-cut"
+    }
+  ],
+  "notes": [
+    "NOT claimed: that a wrap derives addition from nothing.",
+    "NOT claimed: that these laws lift off the cut without induction."
+  ],
+  "title": "CLOSURE \u2014 the primitive",
+  "verdict": "FORCED-on-cut"
+}

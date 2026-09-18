@@ -1,0 +1,65 @@
+{
+  "claims": [
+    {
+      "cut": "{0..6}^2",
+      "falsifier": "exhibit a finite enumeration that certifies unbounded +commute with no schema",
+      "held": true,
+      "n": 49,
+      "scope": 49,
+      "text": "WALL 1 INDUCTION. + commutes on {0..6}^2. Finite cut, not unbounded proof. Closing the gap is a schema. No list closes an infinite axiom family",
+      "tier": "FORCED-on-cut"
+    },
+    {
+      "cut": "one intruder",
+      "falsifier": "exhibit a first-order axiom, not a schema, that kicks this chain",
+      "held": true,
+      "n": 3,
+      "scope": 3,
+      "text": "WALL 1b INTRUDER. Extra chain satisfies zero, injective S, 0 not a successor. No amount of S from 0 reaches it. Only the schema excludes it",
+      "tier": "FORCED-on-cut"
+    },
+    {
+      "cut": "n=1 R empty p false",
+      "falsifier": "exhibit this frame making BOX p imply p",
+      "held": true,
+      "n": 1,
+      "scope": 1,
+      "text": "WALL 2b SOUNDNESS-IN-MINIATURE. On a 1-world empty frame, BOX p holds and p does not. Proved-as-BOX does not imply held. Generated. No paper is consulted for this row",
+      "tier": "FORCED-on-cut"
+    },
+    {
+      "cut": "Closure(7)",
+      "falsifier": "price establishing a wrap using only resources downstream of that wrap",
+      "held": true,
+      "n": 49,
+      "scope": 49,
+      "text": "WALL 3 CLOSURE UNPRICED. Wrap of 7 closes on 49 pairs. Establishing the wrap is not priced from inside the wrap",
+      "tier": "FORCED-on-cut"
+    },
+    {
+      "cut": "closure.py source",
+      "falsifier": "implement co_propagate with no host addition or remainder",
+      "held": true,
+      "n": 1,
+      "scope": 1,
+      "text": "WALL 0 HOST METAL. co_propagate is (a+b)%n. The mechanism route reads a wrap. It does not birth + in a host that lacks +",
+      "tier": "FORCED-on-cut"
+    },
+    {
+      "cut": "collision (9,6)",
+      "falsifier": "exhibit a priced = on (val, mint) that still merges these two pairs",
+      "held": true,
+      "n": 1,
+      "scope": 1,
+      "text": "WALL 4 FREE A=A. Value-eq merges x^2 and 3x at (9,6). Next slots are 2 and 0. Substitution along free = writes 2=0. A=A is a weigh on listed dimensions, not a prior",
+      "tier": "FORCED-on-cut"
+    }
+  ],
+  "notes": [
+    "NOT claimed: Wall 2-Godel is proved here. That line is a citation.",
+    "NOT claimed: walls are defects. They are the specification.",
+    "NOT claimed: identity is false. Free A=A is an unpaid G."
+  ],
+  "title": "WALLS \u2014 both routes stop here",
+  "verdict": "FORCED-on-cut"
+}

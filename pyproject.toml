@@ -1,10 +1,10 @@
 [project]
-name = "carriersets"
-version = "1.0.0"
-description = "85 formal systems as P/G->Q carriers, with 92 executable checks and a self-computed paid fraction"
+name = "mathoflogic"
+version = "0.3.0"
+description = "Cut-and-ledger maps. isolate / rate / certify."
 requires-python = ">=3.10"
-dependencies = ["sympy>=1.12", "numpy>=1.26"]
+readme = "README.md"
 license = {text = "MIT"}
 
-[tool.setuptools]
-packages = ["carrierlib", "carrierlib.checks", "carriers"]
+[tool.setuptools.packages.find]
+include = ["pl*", "mechanism*", "studio*", "modal*"]

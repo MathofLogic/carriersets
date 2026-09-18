@@ -1,3 +1,10 @@
 __pycache__/
 *.pyc
+*.pyo
 .pytest_cache/
+*.egg-info/
+.venv/
+ATLAS.md
+useful_pattern_manifest.json
+useful_pattern.png
+carriersets/ATLAS.md

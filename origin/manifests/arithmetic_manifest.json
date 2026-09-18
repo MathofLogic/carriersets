@@ -1,0 +1,37 @@
+{
+  "claims": [
+    {
+      "cut": "winding 5 at (3, 7, 12)",
+      "falsifier": "exhibit a winding whose reading is identical at every wrap",
+      "held": true,
+      "n": 3,
+      "scope": 3,
+      "text": "value is wrap-relative: 5 reads differently at 3, 7, 12",
+      "tier": "FORCED-on-cut"
+    },
+    {
+      "cut": "n=2..30",
+      "falsifier": "exhibit n in 2..30 where the two predicates split",
+      "held": true,
+      "n": 29,
+      "scope": 29,
+      "text": "prime-on-wrap (no annihilating pair) agrees with school prime",
+      "tier": "FORCED-on-cut"
+    },
+    {
+      "cut": "n=2..11",
+      "falsifier": "exhibit a composite n<12 where every nonzero has an iterate-inverse",
+      "held": true,
+      "n": 10,
+      "scope": 10,
+      "text": "wraps where every nonzero winding undoes under iterate are primes",
+      "tier": "FORCED-on-cut"
+    }
+  ],
+  "notes": [
+    "NOT claimed: priority on Lagrange or Fermat. Agreement is a check.",
+    "NOT claimed: Z is constructed. Z is refuse-to-close, unpaid past any n."
+  ],
+  "title": "NUMBERS \u2014 from wrap",
+  "verdict": "FORCED-on-cut"
+}

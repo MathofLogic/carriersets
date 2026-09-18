@@ -1,0 +1,5 @@
+[project]
+name = "origin"
+version = "0.2.0"
+description = "Two routes to arithmetic, and the wall they share."
+requires-python = ">=3.8"
